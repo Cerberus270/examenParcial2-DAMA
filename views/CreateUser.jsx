@@ -50,7 +50,7 @@ export default function CreateUser({ navigation }) {
                         <Stack space={5}>
                             <Stack>
                                 <FormControl.Label>Nombre Usuario</FormControl.Label>
-                                <Input variant="underlined" keyboardType='number-pad' p={2} placeholder="Tu nombre aqui"
+                                <Input variant="underlined"  p={2} placeholder="Tu nombre aqui"
                                 onChangeText={(value) => handleChangeText("name", value)}
                                 value={state.name}
                                 />

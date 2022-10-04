@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 //Importando elementos de interacción con las colecciones
-import { collection, deleteDoc, getDocs,doc } from "firebase/firestore";
+import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
 //Importando el componente de conexión a Firebase
 import db from "../database/firebase9";
 import { Avatar, ListItem, Button } from "react-native-elements";
@@ -53,9 +53,23 @@ export default function ListUser(props) {
     }, [])
   );
 
-  const eliminarElemento = async(id)=>{
-    await deleteDoc(doc(db,"users",id));
-    obtenerDatos();
+  const eliminarElemento = (id) => {
+    Alert.alert(
+      "Eliminar",
+      "Esta seguro que desea eliminar este usuario?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancel Pressed"),
+        },
+        {
+          text: "OK", onPress: async () => {
+            await deleteDoc(doc(db, "users", id));
+            obtenerDatos();
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -76,7 +90,7 @@ export default function ListUser(props) {
               });
             }}
             leftContent={
-                <Button
+              <Button
                 title="Eliminar"
                 buttonStyle={{
                   backgroundColor: 'red',
@@ -88,10 +102,9 @@ export default function ListUser(props) {
                   width: '100%',
                   marginVertical: 10,
                 }}
-                onPress={()=>eliminarElemento(user.id)}
+                onPress={() => eliminarElemento(user.id)}
               />
-            }
-          >
+            }>
             <ListItem.Chevron />
             <Avatar
               source={{
@@ -100,12 +113,10 @@ export default function ListUser(props) {
               rounded
             />
             <ListItem.Content>
-              <ListItem.Title>
-                <Text>{user.name}</Text>
+              <ListItem.Title >
+                <Text >{user.name}</Text>
               </ListItem.Title>
-              <ListItem.Content>
-                <Text>{user.email}</Text>
-              </ListItem.Content>
+              <Text style={styles.ratingText}>{user.email}</Text>
             </ListItem.Content>
           </ListItem.Swipeable>
         );
@@ -114,9 +125,15 @@ export default function ListUser(props) {
   );
 }
 
+
 const styles = StyleSheet.create({
-  Text: {
-    fontSize: 25,
-    color: "cyan",
+  subtitleView: {
+    flexDirection: 'row',
+    paddingLeft: 10,
+    paddingTop: 5
   },
-});
+  ratingText: {
+    paddingLeft: 10,
+    color: 'grey'
+  }
+})
