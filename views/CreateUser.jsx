@@ -4,7 +4,7 @@ import { Input, Stack, FormControl, NativeBaseProvider, Box, ScrollView, Button 
 import { collection, addDoc } from 'firebase/firestore';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 //Importar la conexión a Firebase de nuestro proyecto
-import db from '../database/firebase';
+import db from '../database/firebase9';
 
 //Agregar Navegacion a la pantalla con "navigation"
 export default function CreateUser({ navigation }) {
