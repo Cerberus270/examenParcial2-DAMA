@@ -1,7 +1,5 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
 
 // Your web app's Firebase configuration
@@ -14,12 +12,10 @@ const firebaseConfig = {
     appId: "1:783737767355:web:fb58ed89cfe53fc26eb09e"
 };
 
-firebase.initializeApp(firebaseConfig)
-//Creando componente de conexion 
-const db = firebase.firestore()
+const app = initializeApp(firebaseConfig);
 
 
-export default {
-    firebase,
-    db
-};
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
+
+export default db;

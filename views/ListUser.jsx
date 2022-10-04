@@ -5,20 +5,17 @@ import { useFocusEffect } from '@react-navigation/native';
 //Importando elementos de interacción con las colecciones
 import { collection, getDocs } from "firebase/firestore";
 //Importando el componente de conexión a Firebase
-import firebase from '../database/firebase';
+import db from '../database/firebase9';
+import { Avatar, ListItem } from 'react-native-elements';
 
 export default function ListUser(props) {
-    const {navigation} = props;
-    const [user, setUsers] = useState([]);
-    //useEffect: es un hook que permite ejecutar código cada vez que
-    //nuestro componente se renderice 
-    //(ya sea por una actualización o sea la primera vez)
-
+    const { navigation } = props;
+    const [users, setUsers] = useState([]);
 
     useFocusEffect(
         React.useCallback(() => {
-            //Creando función asíncrona 
-            const obtenerDatos = async () => {
+            // Asi lo hace el don, al estilo firebase 8
+            /*const obtenerDatos = async () => {
                 firebase.db.collection("users").onSnapshot((querySnapshot) => {
                     const users = [];
                     querySnapshot.docs.forEach((doc) => {
@@ -34,8 +31,27 @@ export default function ListUser(props) {
                 })
             }
             //Llamado de la función
+            obtenerDatos();*/
+
+            // Asi segun doc de firebase
+            const obtenerDatos = async () => {
+                let usersList = [];
+                const datos = await getDocs(collection(db, 'users'));
+                datos.forEach((doc) => {
+                    const { name, email, phone } = doc.data();
+                    usersList.push({
+                        id: doc.id,
+                        name,
+                        email,
+                        phone
+                    });
+                });
+                setUsers(usersList);
+            }
+            //Llamado de la función
             obtenerDatos();
         }, [])
+
     );
 
     return (
@@ -43,6 +59,39 @@ export default function ListUser(props) {
             <Text style={styles.Text}>Listado de usuarios</Text>
             <Button title="Crear usuario"
                 onPress={() => navigation.navigate('CreateUser')} />
+            {
+                users.map((user) => {
+                    return (
+                        <ListItem
+                            key={user.id}
+                            bottomDivider
+                            onPress={() => {
+                                navigation.navigate("DetailUser", {
+                                    userId: user.id,
+                                });
+                            }}>
+                            <ListItem.Chevron />
+                            <Avatar
+                                source={{
+                                    uri: "https://img1.ak.crunchyroll.com/i/spire4/be7ccab083087be99884531cadd7d5651630065450_large.png"
+                                }}
+                                rounded />
+                            <ListItem.Content>
+                                <ListItem.Title>
+                                    <Text>
+                                        {user.name}
+                                    </Text>
+                                </ListItem.Title>
+                                <ListItem.Content>
+                                    <Text>
+                                        {user.email}
+                                    </Text>
+                                </ListItem.Content>
+                            </ListItem.Content>
+                        </ListItem>
+                    )
+                })
+            }
         </View>
 
 
